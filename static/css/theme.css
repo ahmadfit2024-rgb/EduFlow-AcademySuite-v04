@@ -1,0 +1,119 @@
+/*
+ * EduFlow-AcademySuite Theme
+ * Implements the Fit4Future brand identity as per the foundational document.
+ * Colors: Deep Navy (#0A2540), Emerald Green (#00A86B), Muted Gold (#D4AF37).
+ * Typography: Inter.
+ */
+
+:root {
+    /* Color Palette */
+    --bs-primary: #0A2540;          /* Deep Navy */
+    --bs-secondary: #6c757d;        /* Grayscale */
+    --bs-success: #00A86B;          /* Emerald Green */
+    --bs-info: #5bc0de;
+    --bs-warning: #f0ad4e;
+    --bs-danger: #d9534f;
+    --bs-light: #F8F9FA;
+    --bs-dark: #212529;
+
+    /* Custom Brand Colors */
+    --color-navy: #0A2540;
+    --color-green: #00A86B;
+    --color-gold: #D4AF37;
+    --color-text: #212529;
+    --color-text-light: #6c757d;
+    --color-background: #F8F9FA;
+    --color-border: #dee2e6;
+
+    /* Typography */
+    --bs-body-font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+/* --- Component Overrides --- */
+.btn-primary {
+    background-color: var(--color-green);
+    border-color: var(--color-green);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #008f5a; /* Darker green */
+    border-color: #007f50;
+}
+
+.btn-outline-primary {
+    color: var(--color-green);
+    border-color: var(--color-green);
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    color: #fff;
+    background-color: var(--color-green);
+    border-color: var(--color-green);
+}
+
+a {
+    color: var(--color-green);
+    text-decoration: none;
+}
+a:hover {
+    color: #008f5a;
+}
+
+/* --- Sidebar Styling --- */
+#sidebar-wrapper {
+    background-color: var(--color-navy);
+    min-height: 100vh;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 1rem 1.25rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+#sidebar-wrapper .list-group-item {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: transparent;
+    border: none;
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+#sidebar-wrapper .list-group-item i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+#sidebar-wrapper .list-group-item:hover,
+#sidebar-wrapper .list-group-item.active {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-left: 5px solid var(--color-green);
+    padding-left: calc(1.25rem - 5px);
+}
+
+/* --- Navbar Styling --- */
+#page-content-wrapper .navbar {
+    border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* --- Main Content Styling --- */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--color-navy);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+}

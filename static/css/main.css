@@ -1,0 +1,256 @@
+/* ================================================================= */
+/* static/css/main.css                                               */
+/* ----------------------------------------------------------------- */
+/* KEEPS THE SYSTEM INTEGRATED: New styles are added to support      */
+/* the enhanced, immersive course player, improving usability and    */
+/* visual appeal as per the UX philosophy.                           */
+/* ================================================================= */
+
+/* --- General UX Enhancements --- */
+.btn, .card, .list-group-item {
+    transition: all 0.25s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.06);
+}
+#page-content-wrapper {
+    transition: margin-left 0.4s;
+}
+#wrapper.toggled #page-content-wrapper {
+    margin-left: -250px;
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+main.container-fluid {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* --- Specific component styles --- */
+.kpi-card {
+    border-left: 4px solid var(--color-navy);
+}
+
+/* --- AI Assistant Styles --- */
+.ai-assistant-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 60px;
+    height: 60px;
+    z-index: 1050;
+    font-size: 1.5rem;
+}
+#ai-chat-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.user-bubble, .ai-bubble {
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+.user-bubble {
+    background-color: var(--color-green);
+    color: white;
+    border-top-right-radius: 0.25rem;
+    align-self: flex-end;
+}
+.ai-bubble {
+    background-color: var(--bs-light);
+    border: 1px solid var(--color-border);
+    border-top-left-radius: 0.25rem;
+    align-self: flex-start;
+}
+.ai-avatar {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-navy);
+    color: white;
+    border-radius: 50%;
+}
+
+/* --- NEW: Course Player Styles --- */
+.course-player-container {
+    display: flex;
+    height: calc(100vh - 58px); /* Full height minus navbar */
+    overflow: hidden;
+}
+.course-player-sidebar {
+    flex: 0 0 320px;
+    background-color: #fff;
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+}
+.sidebar-header {
+    background-color: var(--bs-light);
+}
+.sidebar-header .back-link {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+.sidebar-header .back-link:hover {
+    color: var(--color-navy);
+}
+.progress-bar {
+    background-color: var(--color-green) !important;
+    transition: width 0.6s ease;
+}
+.lesson-list-sidebar {
+    overflow-y: auto;
+}
+.lesson-list-sidebar .list-group-item {
+    border-radius: 0;
+    border-left: 4px solid transparent;
+    font-weight: 500;
+}
+.lesson-list-sidebar .list-group-item.active {
+    background-color: rgba(0, 168, 107, 0.1);
+    border-left-color: var(--color-green);
+    color: var(--color-navy);
+    font-weight: 600;
+}
+.course-player-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-background);
+}
+.content-body {
+    flex: 1;
+    overflow-y: auto;
+}
+.video-player-wrapper {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+}
+.quiz-callout {
+    border: 2px dashed var(--color-border);
+}
+/* --- Path Builder & Course Management UI --- */
+.path-builder-container { 
+    display: flex; 
+    gap: 1.5rem; 
+    height: calc(100vh - 150px); 
+}
+.path-builder-panel { 
+    background: #fff; 
+    border-radius: 0.5rem; 
+    border: 1px solid var(--color-border); 
+    display: flex; 
+    flex-direction: column; 
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.03);
+}
+.canvas-panel { 
+    flex: 1; 
+}
+.panel-header { 
+    font-weight: 600; 
+    padding: 0.75rem 1rem; 
+    border-bottom: 1px solid var(--color-border); 
+    background-color: var(--bs-light);
+}
+.panel-body { 
+    padding: 1rem; 
+    overflow-y: auto; 
+    flex-grow: 1; 
+}
+.course-list .course-card-item {
+    display: flex;
+    align-items: center;
+    cursor: grab;
+    margin-bottom: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--color-border);
+    padding: 0.75rem 1rem;
+    background-color: #fff;
+}
+.course-list .course-card-item:hover {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+.course-card-content {
+    flex-grow: 1;
+}
+.drag-handle-courses, .drag-handle-lessons {
+    font-size: 1.2rem;
+}
+.sortable-ghost { 
+    opacity: 0.4; 
+    background: #cce5ff; 
+    border-style: dashed;
+}
+.placeholder-area { 
+    border: 2px dashed var(--color-border); 
+    border-radius: 0.5rem; 
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+    text-align: center;
+}
+.placeholder-area i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+/* --- Discussion Forum Styles --- */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+.avatar-question {
+    background-color: var(--bs-secondary);
+    color: white;
+}
+.avatar-reply {
+    background-color: var(--bs-gray-300);
+    color: var(--bs-dark);
+}
+.avatar-instructor {
+    background-color: var(--color-navy);
+    color: white;
+}
+.reply-bubble {
+    background-color: var(--bs-light);
+    padding: 0.75rem 1rem;
+    border-radius: 1rem;
+    border-top-left-radius: 0.25rem;
+}
+/* --- Quiz Result Styles --- */
+.answer-correct {
+    background-color: rgba(0, 168, 107, 0.1);
+    border: 1px solid rgba(0, 168, 107, 0.2);
+}
+.answer-incorrect {
+    background-color: rgba(217, 83, 79, 0.1);
+    border: 1px solid rgba(217, 83, 79, 0.2);
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+.answer-correct .form-check-label,
+.answer-correct .badge {
+    font-weight: 500;
+}
