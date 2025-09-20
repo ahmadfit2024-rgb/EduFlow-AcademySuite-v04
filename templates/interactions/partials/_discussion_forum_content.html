@@ -1,0 +1,31 @@
+{% raw %}{% load i18n %}
+<h5 class="mb-3">{% trans "Recent Questions" %}</h5>
+<div class="discussion-threads">
+    {% for thread in threads %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <div class="avatar bg-secondary text-white me-3">
+                            {{ thread.student.full_name|default:thread.student.username|slice:":1"|upper }}
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mt-0">{{ thread.title }}</h6>
+                        <p>{{ thread.question }}</p>
+                        <small class="text-muted">
+                            {% blocktrans with student_name=thread.student.full_name|default:thread.student.username time_since=thread.created_at|timesince %}
+                            Asked by {{ student_name }} about {{ time_since }} ago
+                            {% endblocktrans %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="text-center text-muted p-4">
+            <p>{% trans "No questions have been asked for this lesson yet." %}</p>
+            <p>{% trans "Be the first to ask!" %}</p>
+        </div>
+    {% endfor %}
+</div>

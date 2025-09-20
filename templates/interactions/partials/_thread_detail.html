@@ -1,0 +1,72 @@
+{% raw %}{% load i18n user_roles discussion_tags %}
+{# ================================================================= #}
+{# templates/interactions/partials/_thread_detail.html               #}
+{# ----------------------------------------------------------------- #}
+{# KEEPS THE SYSTEM INTEGRATED: This template is heavily updated to  #}
+{# display replies and include the reply form with HTMX attributes,  #}
+{# creating a dynamic and seamless user interaction.                 #}
+{# ================================================================= #}
+<div class="card mb-3 thread-card">
+    <div class="card-body">
+        {# --- Original Question --- #}
+        <div class="d-flex">
+            <div class="flex-shrink-0">
+                <div class.bind="`avatar avatar-question me-3`" title="{{ thread.student.full_name|default:thread.student.username }}">
+                    {{ thread.student.full_name|default:thread.student.username|slice:":1"|upper }}
+                </div>
+            </div>
+            <div class="flex-grow-1">
+                <h6 class="mt-0 fw-bold">{{ thread.title }}</h6>
+                <p>{{ thread.question }}</p>
+                <small class="text-muted">
+                    {% blocktrans with student_name=thread.student.full_name|default:thread.student.username time_since=thread.created_at|timesince %}
+                    Asked by {{ student_name }} about {{ time_since }} ago
+                    {% endblocktrans %}
+                </small>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        {# --- Replies Section --- #}
+        <div class="replies-section ps-md-5">
+            {% for post in thread.posts.all|dictsort:"created_at" %}
+                <div class="d-flex mt-3">
+                    <div class="flex-shrink-0">
+                        <div class="avatar avatar-reply me-3 
+                            {% if post.user|has_role:'instructor' %}avatar-instructor{% endif %}" 
+                            title="{{ post.user.full_name|default:post.user.username }}">
+                            {{ post.user.full_name|default:post.user.username|slice:":1"|upper }}
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="reply-bubble">
+                            <p class="mb-1">{{ post.reply_text }}</p>
+                            <small class="text-muted">
+                                {% if post.user|has_role:'instructor' %}<strong>Instructor</strong> · {% endif %}
+                                {{ post.created_at|timesince }} ago
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# --- Reply Form (for Instructors or relevant users) --- #}
+        {% if request.user|has_role:'instructor' or request.user|has_role:'admin' %}
+        <div class="reply-form ps-md-5 mt-4 pt-3 border-top">
+            <form hx-post="{% url 'interactions:add_post' thread_id=thread.pk %}"
+                  hx-target="#thread-{{ thread.pk }}-container"
+                  hx-swap="outerHTML">
+                {% csrf_token %}
+                {% get_post_form as post_form %}
+                <div class="mb-2">{{ post_form.reply_text }}</div>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-sm btn-primary">{% trans "Post Reply" %}</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endraw %}

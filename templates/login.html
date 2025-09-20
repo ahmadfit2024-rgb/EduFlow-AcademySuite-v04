@@ -1,0 +1,52 @@
+{% raw %}{% extends 'base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "Login" %} - EduFlow-AcademySuite{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 90vh;">
+        <div class="col-md-7 col-lg-5">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'images/logo_EduFlow-AcademySuite.png' %}" alt="EduFlow Logo" class="mb-4" style="max-width: 220px;">
+                        <h1 class="h4 fw-bold mb-1" style="color: var(--color-navy);">{% trans "Welcome Back" %}</h1>
+                        <p class="text-muted">{% trans "Sign in to continue to your dashboard." %}</p>
+                    </div>
+                    
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        
+                        {# --- Enhanced Error Display --- #}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div>
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-floating mb-3">
+                            <input type="text" name="{{ form.username.name }}" class="form-control" id="id_username" placeholder="Username" required>
+                            <label for="id_username">{% trans "Username or Email" %}</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" name="{{ form.password.name }}" class="form-control" id="id_password" placeholder="Password" required>
+                            <label for="id_password">{% trans "Password" %}</label>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold">{% trans "Log In" %}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% endraw %}

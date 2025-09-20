@@ -1,0 +1,26 @@
+{% raw %}<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+    <div class="container-fluid">
+        <button class="btn btn-light" id="sidebarToggle">☰</button>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% if request.user.avatar_url %}
+                            <img src="{{ request.user.avatar_url }}" alt="Avatar" class="avatar avatar-sm me-2">
+                        {% else %}
+                            <div class="avatar avatar-sm bg-secondary text-white me-2">
+                                {{ request.user.full_name|default:request.user.username|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
+                        {{ request.user.full_name|default:request.user.username }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">{% trans "Profile" %}</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'logout' %}">{% trans "Logout" %}</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

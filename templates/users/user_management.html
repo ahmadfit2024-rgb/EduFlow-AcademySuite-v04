@@ -1,0 +1,78 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "User Management" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">{% trans "User Management" %}</h1>
+            <p class="text-muted">{% trans "Add, edit, and manage all users on the platform." %}</p>
+        </div>
+        <button class="btn btn-primary" 
+                hx-get="{% url 'users:user_add' %}" 
+                hx-target="#modal-content" 
+                hx-trigger="click"
+                data-bs-toggle="modal" 
+                data-bs-target="#user-form-modal">
+            <i class="bi bi-plus-lg me-2"></i>{% trans "Add New User" %}
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <input type="search" 
+                   class="form-control" 
+                   name="q" 
+                   placeholder="{% trans 'Search by name, email, or username...' %}"
+                   hx-get="{% url 'users:user_list' %}"
+                   hx-trigger="keyup changed delay:500ms, search"
+                   hx-target="#user-list-container"
+                   hx-indicator=".htmx-indicator">
+        </div>
+        <div id="user-list-container" 
+             hx-get="{% url 'users:user_list' %}" 
+             hx-trigger="load, userListChanged from:body"
+             hx-swap="innerHTML">
+            <div class="text-center p-5"><div class="spinner-border text-primary" role="status"></div></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="user-form-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div id="modal-content">
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Confirm Deletion" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Are you sure you want to delete this user? This action cannot be undone." %}</p>
+            </div>
+            <div class="modal-footer">
+                <form id="delete-user-form" method="post"
+                      hx-post=""
+                      hx-trigger="submit"
+                      hx-target="#user-list-container"
+                      hx-swap="innerHTML"
+                      hx-on--after-request="bootstrap.Modal.getInstance('#delete-confirm-modal').hide()">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                    <button type="submit" class="btn btn-danger">{% trans "Delete User" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% endraw %}

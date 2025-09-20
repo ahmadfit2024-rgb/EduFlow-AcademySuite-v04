@@ -1,0 +1,37 @@
+{% raw %}{% load i18n %}
+{# ================================================================= #}
+{# templates/partials/_lesson_list.html                              #}
+{# ----------------------------------------------------------------- #}
+{# KEEPS THE SYSTEM INTEGRATED: The drag handle class is updated to  #}
+{# be specific for lessons, preventing conflicts with other          #}
+{# sortable lists in the application.                                #}
+{# ================================================================= #}
+<ul class="list-group list-group-flush" id="lesson-list">
+    {% for lesson in course.lessons|dictsort:"order" %}
+    <li class="list-group-item d-flex align-items-center" data-lesson-id="{{ lesson._id }}">
+        <span class="drag-handle-lessons text-muted" style="cursor: grab; margin-right: 1rem;"><i class="bi bi-grip-vertical"></i></span>
+        <div>
+            <h6 class="mb-0">{{ lesson.title }}</h6>
+            <small class="text-muted text-capitalize">
+                <i class="bi 
+                    {% if lesson.content_type == 'video' %}bi-camera-video-fill text-danger{% endif %}
+                    {% if lesson.content_type == 'pdf' %}bi-file-earmark-pdf-fill text-info{% endif %}
+                    {% if lesson.content_type == 'quiz' %}bi-patch-question-fill text-warning{% endif %}
+                me-1"></i>
+                {{ lesson.content_type|replace:"_"," " }}
+            </small>
+        </div>
+        <div class="ms-auto">
+            {% if lesson.content_type == 'quiz' %}
+                <a href="{% url 'learning:quiz_builder' course_pk=course.pk lesson_id=lesson._id %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil-square me-1"></i>{% trans "Build Quiz" %}</a>
+            {% else %}
+                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+            {% endif %}
+            <button class="btn btn-sm btn-outline-danger ms-1"><i class="bi bi-trash"></i></button>
+        </div>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-center text-muted py-4">{% trans "This course has no lessons yet." %}</li>
+    {% endfor %}
+</ul>
+{% endraw %}

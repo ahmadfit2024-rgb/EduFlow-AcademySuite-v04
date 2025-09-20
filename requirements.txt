@@ -1,0 +1,38 @@
+# =================================================================
+# requirements.txt
+# -----------------------------------------------------------------
+# KEEPS THE SYSTEM INTEGRATED: This file is updated to include
+# drf-spectacular for professional API documentation, a key non-
+# functional requirement for maintainability and future development.
+# =================================================================
+
+# Django Core
+django>=5.0
+python-dotenv
+gunicorn          # Essential for production deployment
+
+# Database (MongoDB Connector for Django)
+djongo
+
+# API & Authentication
+djangorestframework
+djangorestframework-simplejwt  # For JWT authentication
+drf-spectacular       # For automated API schema and documentation
+
+# Frontend & Forms
+django-htmx           # Professional HTMX integration
+
+# Reporting
+openpyxl              # For generating .xlsx files
+WeasyPrint            # For generating PDF files from HTML
+
+# Asynchronous Tasks
+celery
+redis
+
+# Utilities
+requests              # For making HTTP requests to external APIs
+
+# Development & Code Quality
+black                 # Automated code formatter
+flake8                # Code style checker

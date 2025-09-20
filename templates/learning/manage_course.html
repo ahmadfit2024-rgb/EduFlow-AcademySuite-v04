@@ -1,0 +1,121 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Course" %}: {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <a href="{% url 'dashboard' %}" class="text-muted text-decoration-none"><i class="bi bi-arrow-left"></i> {% trans "Back to Dashboard" %}</a>
+        <h1 class="h2 mt-2">{{ course.title }}</h1>
+        <p class="text-muted">{{ course.description }}</p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>{% trans "Course Content" %}</h5>
+            <div>
+                <span class="htmx-indicator me-2">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                </span>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLessonModal">
+                    <i class="bi bi-plus-lg me-2"></i>{% trans "Add Lesson" %}
+                </button>
+            </div>
+        </div>
+        <div id="lesson-list-container">
+            {% include 'partials/_lesson_list.html' with course=course %}
+        </div>
+    </div>
+</div>
+
+{# --- Add Lesson Modal --- #}
+<div class="modal fade" id="addLessonModal" tabindex="-1" aria-labelledby="addLessonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLessonModalLabel">{% trans "Add New Lesson" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-lesson-form"
+                      hx-post="{% url 'learning:lesson_add' pk=course.pk %}"
+                      hx-target="#lesson-list-container"
+                      hx-swap="innerHTML"
+                      hx-on--after-request="this.closest('.modal').querySelector('[data-bs-dismiss]').click(); this.reset();">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ lesson_form.title.id_for_label }}" class="form-label">{{ lesson_form.title.label }}</label>
+                        {{ lesson_form.title }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ lesson_form.content_type.id_for_label }}" class="form-label">{{ lesson_form.content_type.label }}</label>
+                        {{ lesson_form.content_type }}
+                    </div>
+                    
+                    <div id="video-url-field" class="mb-3 d-none">
+                        <label for="{{ lesson_form.video_url.id_for_label }}" class="form-label">{{ lesson_form.video_url.label }}</label>
+                        {{ lesson_form.video_url }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100">{% trans "Save Lesson" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Dynamic form fields in modal ---
+    const contentTypeSelect = document.querySelector('#id_content_type');
+    const videoUrlField = document.getElementById('video-url-field');
+
+    contentTypeSelect.addEventListener('change', function() {
+        if (this.value === 'video') {
+            videoUrlField.classList.remove('d-none');
+        } else {
+            videoUrlField.classList.add('d-none');
+        }
+    });
+
+    // --- SortableJS Logic for Lessons ---
+    function initializeSortable() {
+        const lessonList = document.getElementById('lesson-list');
+        if (lessonList) {
+            new Sortable(lessonList, {
+                animation: 150,
+                handle: '.drag-handle-lessons', // Use the specific handle for lessons
+                onEnd: function (evt) {
+                    const lessonOrder = Array.from(evt.target.children)
+                                             .map(child => child.dataset.lessonId)
+                                             .filter(id => id);
+                    
+                    // The API URL for reordering lessons
+                    const reorderUrl = "{% url 'course-api:course-update-lesson-order' pk=course.pk %}";
+                    
+                    htmx.ajax('POST', reorderUrl, {
+                        values: { 'lesson_order': lessonOrder },
+                        headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                        indicator: '.htmx-indicator'
+                    });
+                }
+            });
+        }
+    }
+
+    // Initialize sortable on page load
+    initializeSortable();
+
+    // Re-initialize sortable after HTMX swaps the lesson list (e.g., after adding a new lesson)
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'lesson-list-container') {
+            initializeSortable();
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endraw %}

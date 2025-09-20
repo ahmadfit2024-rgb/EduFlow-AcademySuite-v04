@@ -1,0 +1,59 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n quiz_helpers %}
+
+{% block title %}{% trans "Quiz Result" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {# --- Score Summary Card --- #}
+            <div class="card shadow-sm text-center mb-5">
+                <div class="card-body p-5">
+                    <p class="lead text-muted mb-2">{% trans "Your Score" %}</p>
+                    <h1 class="display-3 fw-bold 
+                        {% if attempt.score >= 50 %}text-success{% else %}text-danger{% endif %}">
+                        {{ attempt.score|floatformat:0 }}%
+                    </h1>
+                    <hr>
+                    <a href="{% url 'learning:lesson_detail' course_slug=enrollment.course.slug lesson_order=1 %}" class="btn btn-primary mt-3">
+                        <i class="bi bi-arrow-left-circle me-2"></i>{% trans "Back to Course" %}
+                    </a>
+                </div>
+            </div>
+
+            <h3 class="mt-5 mb-3">{% trans "Review Your Answers" %}</h3>
+            
+            {# --- Answer Review Section --- #}
+            {% for question in lesson.content_data.questions %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong>{% trans "Question" %} {{ forloop.counter }}:</strong> {{ question.question_text }}</p>
+                    
+                    {% for answer in question.answers %}
+                    {% with submitted_answer_id=attempt.answers|get_item:"question_"|add:forloop.parentloop.counter|stringformat:"s" %}
+                    <div class="form-check p-2 rounded 
+                        {% if answer.is_correct %}answer-correct{% endif %}
+                        {% if not answer.is_correct and submitted_answer_id == answer._id|stringformat:"s" %}answer-incorrect{% endif %}">
+                        
+                        <input class="form-check-input" type="radio" disabled
+                               {% if submitted_answer_id == answer._id|stringformat:"s" %}checked{% endif %}>
+                        <label class="form-check-label">
+                            {{ answer.answer_text }}
+                            {% if answer.is_correct %}
+                                <span class="badge bg-success ms-2"><i class="bi bi-check-circle-fill me-1"></i> {% trans "Correct" %}</span>
+                            {% elif submitted_answer_id == answer._id|stringformat:"s" %}
+                                <span class="badge bg-danger ms-2"><i class="bi bi-x-circle-fill me-1"></i> {% trans "Your Answer" %}</span>
+                            {% endif %}
+                        </label>
+                    </div>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% endraw %}

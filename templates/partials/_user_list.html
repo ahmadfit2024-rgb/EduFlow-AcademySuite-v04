@@ -1,0 +1,76 @@
+{% raw %}{% load i18n %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+            <tr>
+                <th>{% trans "User" %}</th>
+                <th>{% trans "Role" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Date Joined" %}</th>
+                <th class="text-end">{% trans "Actions" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        {% if user.avatar_url %}
+                            <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar me-3">
+                        {% else %}
+                            <div class="avatar bg-secondary text-white me-3">
+                                {{ user.full_name|default:user.username|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h6 class="mb-0">{{ user.full_name|default:user.username }}</h6>
+                            <small class="text-muted">{{ user.email }}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="badge rounded-pill bg-primary-soft text-primary text-capitalize">{{ user.get_role_display }}</span>
+                </td>
+                <td>
+                    {% if user.is_active %}
+                    <span class="badge bg-success-soft text-success">{% trans "Active" %}</span>
+                    {% else %}
+                    <span class="badge bg-danger-soft text-danger">{% trans "Inactive" %}</span>
+                    {% endif %}
+                </td>
+                <td>{{ user.date_joined|date:"d M, Y" }}</td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-outline-secondary"
+                            hx-get="{% url 'users:user_edit' pk=user.pk %}"
+                            hx-target="#modal-content"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#user-form-modal">
+                        <i class="bi bi-pencil-square"></i> {% trans "Edit" %}
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger ms-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#delete-confirm-modal"
+                            data-delete-url="{% url 'users:user_delete' pk=user.pk %}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">
+                    <div class="text-center py-5">
+                        <p class="text-muted">
+                            {% if is_search %}
+                                {% trans "No users found matching your search query." %}
+                            {% else %}
+                                {% trans "There are no users in the system yet. Click 'Add New User' to start." %}
+                            {% endif %}
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endraw %}

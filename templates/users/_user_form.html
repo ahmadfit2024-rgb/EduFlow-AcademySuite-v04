@@ -1,0 +1,59 @@
+{% raw %}{% load i18n %}
+{# ================================================================= #}
+{# templates/users/_user_form.html (RENAMED & REFACTORED)            #}
+{# ----------------------------------------------------------------- #}
+{# KEEPS THE SYSTEM INTEGRATED: This form is now a partial, designed #}
+{# to be loaded into a modal. It includes HTMX attributes for        #}
+{# submission and handles both create and update scenarios.         #}
+{# ================================================================= #}
+<form method="post" 
+      hx-post="{% if user %}{% url 'users:user_edit' pk=user.pk %}{% else %}{% url 'users:user_add' %}{% endif %}"
+      hx-target="#modal-content"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <div class="modal-header">
+        <h5 class="modal-title">{{ title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.full_name.id_for_label }}" class="form-label">{{ form.full_name.label }}</label>
+                    {{ form.full_name }}
+                    <div class="text-danger small">{{ form.full_name.errors }}</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                    {{ form.username }}
+                    <div class="text-danger small">{{ form.username.errors }}</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                    {{ form.email }}
+                    <div class="text-danger small">{{ form.email.errors }}</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.role.id_for_label }}" class="form-label">{{ form.role.label }}</label>
+                    {{ form.role }}
+                    <div class="text-danger small">{{ form.role.errors }}</div>
+                </div>
+                {% if not user %}
+                <div class="col-md-6 mb-3">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                    {{ form.password }}
+                    <div class="text-danger small">{{ form.password.errors }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans "Save Changes" %}</button>
+    </div>
+</form>

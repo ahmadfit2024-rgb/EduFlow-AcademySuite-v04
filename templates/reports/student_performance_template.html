@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Student Performance Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 { 
+            color: #0A2540; /* Deep Navy */
+            margin: 0;
+        }
+        .header .logo {
+            /* In a real scenario, you'd have a way to get the full URL to the logo */
+            /* For now, we'll just use text. */
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0A2540;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #F8F9FA; /* Light Gray */
+            color: #0A2540;
+            font-weight: 600;
+        }
+        .label { 
+            font-weight: bold; 
+            width: 30%;
+        }
+        .footer {
+            position: fixed;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="footer">
+        EduFlow-AcademySuite Report | Generated on {% now "Y-m-d H:i" %}
+    </div>
+
+    <div class="header">
+        <div class="logo">EduFlow-AcademySuite</div>
+        <h1>Student Performance Report</h1>
+    </div>
+    
+    <hr>
+    
+    <table>
+        <tr>
+            <td class="label">Student Name:</td>
+            <td>{{ student.student_name }}</td>
+        </tr>
+        <tr>
+            <td class="label">Course Title:</td>
+            <td>{{ student.course_title }}</td>
+        </tr>
+        <tr>
+            <td class="label">Enrollment Date:</td>
+            <td>{{ student.enrollment_date }}</td>
+        </tr>
+        <tr>
+            <td class="label">Current Status:</td>
+            <td>{{ student.status }}</td>
+        </tr>
+        <tr>
+            <td class="label">Overall Progress:</td>
+            <td><strong>{{ student.progress }}%</strong></td>
+        </tr>
+    </table>
+</body>
+</html>

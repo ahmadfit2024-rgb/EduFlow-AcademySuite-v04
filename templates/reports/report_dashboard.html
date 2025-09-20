@@ -1,0 +1,141 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <h1 class="h2">{% trans "Reporting Dashboard" %}</h1>
+        <p class="text-muted">{% trans "Select, filter, and generate insightful reports to download." %}</p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">{% trans "Generate Report" %}</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="report-form">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="report_type" class="form-label"><strong>{% trans "1. Select Report Type" %}</strong></label>
+                            <select class="form-select" id="report_type" name="report_type" required>
+                                <option value="" selected disabled>-- {% trans "Choose a report" %} --</option>
+                                <option value="student_pdf">{% trans "Single Student Performance (PDF)" %}</option>
+                                <option value="course_excel">{% trans "Full Course Enrollments (Excel)" %}</option>
+                            </select>
+                        </div>
+
+                        <div id="dynamic-filters" class="mt-4">
+                            <label class="form-label"><strong>{% trans "2. Apply Filters" %}</strong></label>
+                            
+                            <div id="student-pdf-filters" class="border p-3 rounded bg-light d-none">
+                                <p class="small text-muted">For this report, please select the student and the relevant course.</p>
+                                <div class="mb-3">
+                                    <label for="student_id" class="form-label">{% trans "Select Student" %}</label>
+                                    <select class="form-select" name="student_id">
+                                        <option value="">-- {% trans "Choose a student" %} --</option>
+                                        {% for student in students %}
+                                        <option value="{{ student.id }}">{{ student }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="course_id_for_student" class="form-label">{% trans "Select Course" %}</label>
+                                    <select class="form-select" name="course_id_for_student">
+                                         <option value="">-- {% trans "Choose a course" %} --</option>
+                                        {% for course in courses %}
+                                        <option value="{{ course.pk }}">{{ course.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div id="course-excel-filters" class="border p-3 rounded bg-light d-none">
+                                <p class="small text-muted">For this report, please select the course you wish to analyze.</p>
+                                <label for="course_id_for_excel" class="form-label">{% trans "Select Course" %}</label>
+                                <select class="form-select" name="course_id_for_excel">
+                                    <option value="">-- {% trans "Choose a course" %} --</option>
+                                    {% for course in courses %}
+                                    <option value="{{ course.pk }}">{{ course.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" id="generate-btn" class="btn btn-primary btn-lg" disabled>
+                                <i class="bi bi-download me-2"></i>{% trans "Generate & Download" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reportTypeSelect = document.getElementById('report_type');
+    const studentFilters = document.getElementById('student-pdf-filters');
+    const courseFilters = document.getElementById('course-excel-filters');
+    const generateBtn = document.getElementById('generate-btn');
+    const form = document.getElementById('report-form');
+    
+    // Create new hidden inputs that will be submitted
+    const finalStudentIdInput = document.createElement('input');
+    finalStudentIdInput.type = 'hidden';
+    finalStudentIdInput.name = 'student_id';
+    form.appendChild(finalStudentIdInput);
+
+    const finalCourseIdInput = document.createElement('input');
+    finalCourseIdInput.type = 'hidden';
+    finalCourseIdInput.name = 'course_id';
+    form.appendChild(finalCourseIdInput);
+
+    reportTypeSelect.addEventListener('change', function() {
+        studentFilters.classList.add('d-none');
+        courseFilters.classList.add('d-none');
+        generateBtn.disabled = true;
+
+        const selectedType = this.value;
+        if (selectedType === 'student_pdf') {
+            studentFilters.classList.remove('d-none');
+        } else if (selectedType === 'course_excel') {
+            courseFilters.classList.remove('d-none');
+        }
+    });
+
+    form.addEventListener('change', function() {
+        const selectedType = reportTypeSelect.value;
+        let isFormValid = false;
+
+        if (selectedType === 'student_pdf') {
+            const studentSelect = studentFilters.querySelector('select[name="student_id"]');
+            const courseSelect = studentFilters.querySelector('select[name="course_id_for_student"]');
+            if (studentSelect.value && courseSelect.value) {
+                isFormValid = true;
+                // Update the actual hidden inputs
+                finalStudentIdInput.value = studentSelect.value;
+                finalCourseIdInput.value = courseSelect.value;
+            }
+        } else if (selectedType === 'course_excel') {
+            const courseSelect = courseFilters.querySelector('select[name="course_id_for_excel"]');
+            if (courseSelect.value) {
+                isFormValid = true;
+                // Update the actual hidden input
+                finalCourseIdInput.value = courseSelect.value;
+                finalStudentIdInput.value = ''; // Clear student id
+            }
+        }
+        generateBtn.disabled = !isFormValid;
+    });
+});
+</script>
+{% endblock %}
+{% endraw %}

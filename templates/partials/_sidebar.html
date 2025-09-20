@@ -1,0 +1,50 @@
+{% raw %}{% load i18n user_roles %}
+<div class="border-end" id="sidebar-wrapper">
+    <div class="sidebar-heading border-bottom d-flex align-items-center">
+        <img src="{% static 'images/logo_EduFlow-AcademySuite.png' %}" alt="EduFlow Logo" style="max-height: 40px;">
+    </div>
+    <div class="list-group list-group-flush">
+        <a class="list-group-item" href="{% url 'dashboard' %}">
+            <i class="bi bi-grid-fill"></i> {% trans "Dashboard" %}
+        </a>
+        
+        {% if request.user|has_role:'admin' %}
+            <a class="list-group-item" href="{% url 'users:user_management' %}">
+                <i class="bi bi-people-fill"></i> {% trans "User Management" %}
+            </a>
+            <a class="list-group-item" href="{% url 'report_dashboard' %}">
+                <i class="bi bi-bar-chart-line-fill"></i> {% trans "Platform Reports" %}
+            </a>
+        {% endif %}
+
+        {% if request.user|has_role:'supervisor' or request.user|has_role:'admin' %}
+            <a class="list-group-item" href="{% url 'dashboard' %}"> {# Supervisors access this from their dashboard #}
+                <i class="bi bi-diagram-3-fill"></i> {% trans "Path Management" %}
+            </a>
+        {% endif %}
+
+        {% if request.user|has_role:'instructor' %}
+            <a class="list-group-item" href="{% url 'dashboard' %}"> {# Instructors access courses from their dashboard #}
+                <i class="bi bi-book-half"></i> {% trans "My Courses" %}
+            </a>
+            <a class="list-group-item" href="#"> {# Placeholder for future progress report page #}
+                <i class="bi bi-graph-up"></i> {% trans "Student Progress" %}
+            </a>
+        {% endif %}
+        
+        {% if request.user|has_role:'student' %}
+            <a class="list-group-item" href="{% url 'dashboard' %}">
+                <i class="bi bi-journal-bookmark-fill"></i> {% trans "My Learning" %}
+            </a>
+            <a class="list-group-item" href="#"> {# Placeholder for future certificates page #}
+                <i class="bi bi-patch-check-fill"></i> {% trans "Certificates" %}
+            </a>
+        {% endif %}
+        
+        {% if request.user|has_role:'third_party' %}
+            <a class="list-group-item" href="{% url 'dashboard' %}">
+                <i class="bi bi-building-fill-check"></i> {% trans "Employee Progress" %}
+            </a>
+        {% endif %}
+    </div>
+</div>

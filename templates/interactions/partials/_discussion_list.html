@@ -1,0 +1,16 @@
+{% raw %}{% load i18n discussion_tags %}
+
+<h5 class="mb-3">{% trans "Recent Questions" %}</h5>
+<div class="discussion-threads-list">
+    {% get_discussions_for_lesson current_lesson_id as threads %}
+    {% for thread in threads %}
+        <div id="thread-{{ thread.pk }}-container">
+            {% include 'interactions/partials/_thread_detail.html' with thread=thread %}
+        </div>
+    {% empty %}
+        <div class="text-center text-muted p-4">
+            <p>{% trans "No questions have been asked for this lesson yet." %}</p>
+            <p>{% trans "Be the first to ask!" %}</p>
+        </div>
+    {% endfor %}
+</div>

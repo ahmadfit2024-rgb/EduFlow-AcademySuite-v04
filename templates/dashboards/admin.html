@@ -1,0 +1,111 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Admin Dashboard" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <h1 class="h2">{% trans "Administrator Dashboard" %}</h1>
+        <p class="text-muted">{% trans "This is the central control panel for the entire platform." %}</p>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card kpi-card border-start-primary">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">{% trans "Total Users" %}</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_users }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-people-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card kpi-card border-start-success">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">{% trans "Total Students" %}</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_students }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-fill fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card kpi-card border-start-info">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">{% trans "Total Instructors" %}</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_instructors }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-person-video3 fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card kpi-card border-start-warning">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">{% trans "Total Courses" %}</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_courses }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-journals fs-2 text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">{% trans "Quick Actions" %}</h6>
+                </div>
+                <div class="card-body">
+                    <p>{% trans "Manage the core components of the platform with a single click." %}</p>
+                    <a href="{% url 'users:user_management' %}" class="btn btn-primary">
+                        <i class="bi bi-people-fill me-2"></i> {% trans "Manage Users" %}
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-diagram-3-fill me-2"></i> {% trans "Manage Learning Paths" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.kpi-card {
+    border-left: 4px solid var(--bs-primary);
+    transition: all 0.2s ease-in-out;
+}
+.kpi-card.border-start-primary { border-color: var(--bs-primary) !important; }
+.kpi-card.border-start-success { border-color: var(--bs-success) !important; }
+.kpi-card.border-start-info { border-color: #17a2b8 !important; } /* Custom info color */
+.kpi-card.border-start-warning { border-color: #ffc107 !important; } /* Custom warning color */
+.kpi-card .text-xs { font-size: 0.7rem; }
+.text-gray-300 { color: #dddfeb !important; }
+.text-gray-800 { color: #5a5c69 !important; }
+</style>
+{% endblock %}{% endraw %}

@@ -1,0 +1,72 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Supervisor Dashboard" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">{% trans "Learning Path Management" %}</h1>
+            <p class="text-muted">{% trans "Design, build, and manage comprehensive learning paths and diplomas." %}</p>
+        </div>
+        <a href="{% url 'learning:path_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-2"></i>{% trans "Create New Path" %}
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for path in learning_paths %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 path-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ path.title }}</h5>
+                    <p class="card-text text-muted small">
+                        {{ path.description|truncatewords:20 }}
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-primary-soft text-primary me-2">
+                            <i class="bi bi-stack me-1"></i> {{ path.modules|length }} {% trans "Courses" %}
+                        </span>
+                        <span class="badge bg-success-soft text-success">
+                             <i class="bi bi-people-fill me-1"></i> 0 {% trans "Students" %} {# Placeholder #}
+                        </span>
+                    </div>
+                    <a href="{% url 'learning:path_builder' pk=path.pk %}" class="btn btn-sm btn-outline-secondary">{% trans "Build" %} <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="card text-center py-5">
+                <div class="card-body">
+                    <h5 class="card-title">{% trans "No Learning Paths Found" %}</h5>
+                    <p class="text-muted">{% trans "Get started by creating your first learning path or diploma." %}</p>
+                    <a href="{% url 'learning:path_create' %}" class="btn btn-success mt-2">
+                        <i class="bi bi-plus-lg me-2"></i>{% trans "Create Your First Path" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.path-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.path-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.08);
+}
+.badge.bg-primary-soft { background-color: rgba(10, 37, 64, 0.1); }
+.text-primary { color: var(--color-navy) !important; }
+.badge.bg-success-soft { background-color: rgba(0, 168, 107, 0.1); }
+.text-success { color: #008f5a !important; }
+</style>
+{% endblock %}{% endraw %}

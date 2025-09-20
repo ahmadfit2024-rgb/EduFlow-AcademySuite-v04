@@ -1,0 +1,109 @@
+{% raw %}{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Path Builder" %}: {{ learning_path.title }}{% endblock %}
+
+{% block content %}
+<div class="path-builder-container">
+    
+    {# --- Course Library Panel --- #}
+    <div class="path-builder-panel">
+        <div class="panel-header">
+            <i class="bi bi-collection-fill me-2"></i> {% trans "Course Library" %}
+        </div>
+        <div class="panel-body">
+            <input type="text" class="form-control form-control-sm mb-3" placeholder="{% trans 'Search courses...' %}">
+            <div id="course-library-list" class="list-group course-list">
+                {% for course in available_courses %}
+                <div class="list-group-item course-card-item" data-course-id="{{ course.pk }}">
+                    <i class="bi bi-grip-vertical drag-handle-courses text-muted me-2"></i>
+                    <div class="course-card-content">
+                        <h6 class="mb-1">{{ course.title }}</h6>
+                        <small class="text-muted">{{ course.category }}</small>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted small p-2">{% trans "No other courses available." %}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# --- Main Canvas Panel --- #}
+    <div class="path-builder-panel canvas-panel">
+        <div class="panel-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-diagram-3-fill me-2"></i> {{ learning_path.title }}
+            </div>
+            <div class="htmx-indicator me-2">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+                <span class="ms-1 small">{% trans "Saving..." %}</span>
+            </div>
+        </div>
+        <div id="path-structure-list" class="panel-body course-list">
+            {% for module in learning_path.modules|dictsort:"order" %}
+            <div class="list-group-item course-card-item" data-course-id="{{ module.course_id }}">
+                <i class="bi bi-grip-vertical drag-handle-courses text-muted me-2"></i>
+                <div class="course-card-content">
+                    <h6 class="mb-1">{{ module.course.title }}</h6>
+                    <small class="text-muted">{{ module.course.category }}</small>
+                </div>
+            </div>
+            {% empty %}
+            <div class="placeholder-area">
+                <i class="bi bi-box-arrow-in-down"></i>
+                <p>{% trans "Drag courses from the library here to build the path." %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const libraryEl = document.getElementById('course-library-list');
+    const canvasEl = document.getElementById('path-structure-list');
+
+    // Initialize SortableJS for the library (allows cloning items)
+    new Sortable(libraryEl, {
+        group: {
+            name: 'path-courses',
+            pull: 'clone',
+            put: false
+        },
+        sort: false, // Do not sort items in the library
+        animation: 150,
+        handle: '.drag-handle-courses',
+    });
+
+    // Initialize SortableJS for the canvas (receives and reorders)
+    new Sortable(canvasEl, {
+        group: 'path-courses',
+        animation: 150,
+        handle: '.drag-handle-courses',
+        onEnd: function (evt) {
+            // This is the trigger for our backend save operation.
+            const courseIds = Array.from(canvasEl.children)
+                                 .map(child => child.dataset.courseId)
+                                 .filter(id => id); // Filter out placeholder elements
+            
+            // Use HTMX to send the new structure to the server
+            htmx.ajax('POST', "{% url 'learning-path-api:learning-path-update-structure' pk=learning_path.pk %}", {
+                values: { 'course_ids': courseIds },
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                indicator: '.htmx-indicator'
+            });
+
+            // Remove placeholder if it exists
+            const placeholder = canvasEl.querySelector('.placeholder-area');
+            if (placeholder && canvasEl.children.length > 1) {
+                placeholder.remove();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
+{% endraw %}
