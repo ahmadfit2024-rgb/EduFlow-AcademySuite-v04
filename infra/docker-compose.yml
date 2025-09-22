@@ -1,4 +1,11 @@
-version: '3.8'
+# =================================================================
+# infra/docker-compose.yml
+# -----------------------------------------------------------------
+# KEEPS THE SYSTEM INTEGRATED: This file is updated to fix the
+# .env file path and remove the obsolete 'version' attribute. This
+# ensures Docker can find the environment variables correctly from
+# the project's root directory.
+# =================================================================
 
 services:
   db:
@@ -16,11 +23,11 @@ services:
     container_name: eduflow_web
     command: gunicorn --bind 0.0.0.0:8000 academy_suite.wsgi:application
     volumes:
-      - .:/usr/src/app
+      - ../:/usr/src/app
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - ../.env  # <-- THIS IS THE CRITICAL FIX
     depends_on:
       - db
 
